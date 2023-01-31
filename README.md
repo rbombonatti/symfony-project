@@ -39,3 +39,4 @@ SQLite
 
 #### Etapa 3
 * Listagem de Hashes criadas em **http://localhost:8083/hashes/**, ordenadas pela coluna blockNumber
+* Formulário para filtragem de resultados, pela quantidade máxima de tentativas. Valor inicial de 1.000.000
