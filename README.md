@@ -12,10 +12,10 @@
 
 
 ### Rotas e Comandos
-1) Listagem de Hashes: **http://localhost:8083/hashes/** <br />
-2) Geração Hash Individual: **http://localhost:8083/hashes/create/{STRING DE ENTRADA}/{QUANTIDADE DE REQUISIÇÕES}**<br />
-3) Comando Symfony: **php bin/console generate-hashes {STRING DE ENTRADA} {QUANTIDADE DE REQUISIÇÕES}**<br />
-4) Listagem completa via SQL: **php bin/console doctrine:query:sql "SELECT * FROM Hashes"** <br />
+1) Listagem de Hashes: `http://localhost:8083/hashes/` <br />
+2) Geração Hash Individual: `http://localhost:8083/hashes/create/{STRING DE ENTRADA}/{QUANTIDADE DE REQUISIÇÕES}`<br />
+3) Comando Symfony: `php bin/console generate-hashes {STRING DE ENTRADA} {QUANTIDADE DE REQUISIÇÕES}`<br />
+4) Listagem completa via SQL: `php bin/console doctrine:query:sql "SELECT * FROM Hashes"` <br />
 
 
 ### Models & Controllers
