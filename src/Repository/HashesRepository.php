@@ -47,7 +47,6 @@ class HashesRepository extends ServiceEntityRepository
     public function getNextBlockNumber()
     {
         $conn = $this->getEntityManager()->getConnection();
-
         $sql = '
             SELECT max(block_number)+1 AS next
             FROM Hashes
