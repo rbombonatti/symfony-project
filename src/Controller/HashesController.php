@@ -28,7 +28,6 @@ class HashesController extends AbstractController
     #[Route('/', name: 'app_hashes_index', methods: ['GET', 'POST'])]
     public function index(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
-
         $em = $this->entityManager;
         $allHashesRepository = $em->getRepository(Hashes::class);
         $attemptQuery = $request->request->get('attemptQuery');
@@ -59,7 +58,6 @@ class HashesController extends AbstractController
     #[Route('/create/{entryString}/{requestNumber}', name: 'app_hashes_create', methods: ['GET'])]
     public function create($entryString, $requestNumber, HashesRepository $hashesRepository, Request $request, RateLimiterFactory $anonymousApiLimiter): Response
     {
-
         $limiter = $anonymousApiLimiter->create($request->getClientIp());
         $limit = $limiter->consume();
 
@@ -76,7 +74,6 @@ class HashesController extends AbstractController
         $this->generateHashCascate($entryString, $requestNumber, $hashesRepository);
 
         return $this->redirectToRoute('app_hashes_index', [], Response::HTTP_SEE_OTHER);
-        
     }
 
     public function generateHashCascate(string $entryString, int $requestNumber, HashesRepository $hashesRepository)
@@ -86,7 +83,6 @@ class HashesController extends AbstractController
         $cont = 0;
         $entryStringUsed = $entryString;
         $this->next_block = $hashesRepository->getNextBlockNumber();
-        
 
         do {
             $hashReturned = $this->getQualifiedHash($entryStringUsed, $hashes, $hashesRepository);    
@@ -99,10 +95,8 @@ class HashesController extends AbstractController
         } while ($cont < $requestNumber);
     }
 
-
     private function getQualifiedHash($entryString)
     {
-
         $generationAttempts = 0;
         do {
             $generatedKey = $this->generateStringPrefix(8);
@@ -117,8 +111,8 @@ class HashesController extends AbstractController
         $hashReturned->setGeneratedKey($generatedKey);
         $hashReturned->setGenerationAttempts($generationAttempts);
         $hashReturned->setBlockNumber($this->next_block);
-
         return $hashReturned;
+
     }
 
     private function generateStringPrefix($length) 
