@@ -51,8 +51,5 @@ class GenerateHashesCommand extends Command
             return Command::SUCCESS;
         }
 
-
-
-
     }
 }
