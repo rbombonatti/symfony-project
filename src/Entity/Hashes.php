@@ -45,7 +45,6 @@ class Hashes
     public function setDateTimeBatch(\DateTimeInterface $dateTimeBatch): self
     {
         $this->dateTimeBatch = $dateTimeBatch;
-
         return $this;
     }
 
