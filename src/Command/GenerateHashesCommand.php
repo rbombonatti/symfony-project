@@ -50,6 +50,5 @@ class GenerateHashesCommand extends Command
             $io->success(sprintf('Foram geradas %s hashes a partir da string %s ', $arg2, $arg1));
             return Command::SUCCESS;
         }
-
     }
 }
