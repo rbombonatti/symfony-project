@@ -1,5 +1,4 @@
 # Symfony Project
-### Data: 25/01/2023<br /><br />
 
 ### Etapas
 1) A criação de uma rota que encontra um hash, de certo formato, para uma certa string fornecida como input. <br />
