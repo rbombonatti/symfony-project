@@ -70,9 +70,7 @@ class HashesController extends AbstractController
         if (false === $limit->isAccepted()) {
            return new Response(null, Response::HTTP_TOO_MANY_REQUESTS, $headers);
         }
-
         $this->generateHashCascate($entryString, $requestNumber, $hashesRepository);
-
         return $this->redirectToRoute('app_hashes_index', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -91,7 +89,6 @@ class HashesController extends AbstractController
             if ($cont > 0) {
                 $entryStringUsed = $hashReturned->getGeneratedHash();
             }
-
         } while ($cont < $requestNumber);
     }
 
@@ -112,7 +109,6 @@ class HashesController extends AbstractController
         $hashReturned->setGenerationAttempts($generationAttempts);
         $hashReturned->setBlockNumber($this->next_block);
         return $hashReturned;
-
     }
 
     private function generateStringPrefix($length) 
@@ -123,7 +119,6 @@ class HashesController extends AbstractController
         for ($i = 0; $i < $length; $i++) {
             $generatedString .= $stringUniverse[rand(0, $stringLength -1)];
         }
-
         return $generatedString;
     }
 
