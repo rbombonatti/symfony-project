@@ -7,54 +7,50 @@
     <div class="container mt-4 mb-4">
         <h1>Hashes Geradas</h1>
         <form action="" method="post" class="mt-4 mb-4">
-        <div class="form-group row">
-            <div class="col-2">
-                <label for="attemptQuery">Qtde máximas de tentativas</label>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label for="attemptQuery">Qtde máximas de tentativas</label>
+                </div>
+                <div class="col-2">
+                    <input type="number" 
+                            class="form-control" name="attemptQuery" id="attemptQuery" 
+                            value="{{ attemptQuery }}">    
+                </div>
+                <div class="col-8">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
             </div>
-            <div class="col-2">
-                <input type="number" 
-                        class="form-control" name="attemptQuery" id="attemptQuery" 
-                        value="{{ attemptQuery }}">    
-            </div>
-            <div class="col-8">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-            </div>
-                
-            </div>
-
         </form>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date Time Batch</th>
-                <th>Block Number</th>
-                <th>Entry String</th>
-                <th>Generated Key</th>
-                <th>Generation Attempts</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for hash in allHashes %}
-            <tr>
-                <td>{{ hash.id }}</td>
-                <td>{{ hash.dateTimeBatch ? hash.dateTimeBatch|date('d/m/Y H:i:s') : '' }}</td>
-                <td>{{ hash.blockNumber }}</td>
-                <td>{{ hash.entryString }}</td>
-                <td>{{ hash.generatedKey }}</td>
-                <td>{{ hash.generationAttempts|number_format(0, '.', '.') }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">Nenhum registro encontrado</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="pagination">
-        {{ knp_pagination_render(allHashes) }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date Time Batch</th>
+                    <th>Block Number</th>
+                    <th>Entry String</th>
+                    <th>Generated Key</th>
+                    <th>Generation Attempts</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for hash in allHashes %}
+                <tr>
+                    <td>{{ hash.id }}</td>
+                    <td>{{ hash.dateTimeBatch ? hash.dateTimeBatch|date('d/m/Y H:i:s') : '' }}</td>
+                    <td>{{ hash.blockNumber }}</td>
+                    <td>{{ hash.entryString }}</td>
+                    <td>{{ hash.generatedKey }}</td>
+                    <td>{{ hash.generationAttempts|number_format(0, '.', '.') }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9">Nenhum registro encontrado</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{ knp_pagination_render(allHashes) }}
+        </div>
     </div>
-    </div>
-
 {% endblock %}
