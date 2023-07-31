@@ -49,8 +49,8 @@ class HashesRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = '
-            SELECT max(block_number)+1 as next
-            from Hashes
+            SELECT max(block_number)+1 AS next
+            FROM Hashes
             ';
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
