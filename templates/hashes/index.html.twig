@@ -21,7 +21,7 @@
                 </div>
             </div>
         </form>
-        <table class="table">
+        <table class="table table-min-height">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -49,8 +49,9 @@
             {% endfor %}
             </tbody>
         </table>
+        <p>Total de registros: {{ allHashes.totalItemCount }}</p>
         <div class="pagination">
-            {{ knp_pagination_render(allHashes) }}
+            {{ knp_pagination_render(allHashes, '', {'attemptQuery': attemptQuery}) }}
         </div>
     </div>
 {% endblock %}
