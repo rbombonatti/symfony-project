@@ -7,7 +7,7 @@
 
 ### Comandos iniciais
 
-1) php -S localhost:8083 -t public
+``` php -S localhost:8083 -t public ```
 
 
 ### Rotas e Comandos
