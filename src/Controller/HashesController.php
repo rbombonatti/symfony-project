@@ -85,7 +85,7 @@ class HashesController extends AbstractController
         return $this->redirectToRoute('app_hashes_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    private function generateHashCascate(string $entryString, int $requestNumber)
+    public function generateHashCascate(string $entryString, int $requestNumber)
     {
         $hashes = new Hashes();
         $hashReturned = [];
@@ -149,7 +149,7 @@ class HashesController extends AbstractController
         return md5($inputedString);
     }   
 
-    private function checkEntryValues($entryString, $requestNumber) 
+    public function checkEntryValues($entryString, $requestNumber) 
     {
         if (!$entryString || !ctype_alnum($entryString)) 
             throw new Exception('Variável de entrada deve conter apenas letras e números. Valor rejeitado: ' . $entryString);
@@ -159,6 +159,12 @@ class HashesController extends AbstractController
 
         if (is_numeric($requestNumber) && ($requestNumber > 10000)) 
             throw new Exception('Limite máximo de solicitações é 10.000. Valor solicitado: ' . $requestNumber);
+    }
+
+    public function addHash(Hashes $hash, HashesRepository $hashesRepository)
+    {
+        $hashesRepository->save($hash, true);
+        return true;
     }
 
 }

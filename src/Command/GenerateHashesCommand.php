@@ -24,7 +24,9 @@ class GenerateHashesCommand extends Command
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ManagerRegistry $doctrine
+        private ManagerRegistry $doctrine,
+        private HashesRepository $hashesRepository,
+        private HashesController $hashesController,
     ) {
         parent::__construct();
     }
@@ -43,10 +45,10 @@ class GenerateHashesCommand extends Command
         $arg1 = $input->getArgument('arg1');
         $arg2 = $input->getArgument('arg2');
 
+        $this->hashesController->checkEntryValues($arg1, $arg2);
+
         if ($arg1 && $arg2) {
-            $hashesRepository = new HashesRepository($this->doctrine);
-            $hashes = new HashesController($this->entityManager);
-            $hashes->generateHashCascate($arg1, $arg2, $hashesRepository);
+            $this->hashesController->generateHashCascate($arg1, $arg2);
             $io->success(sprintf('Foram geradas %s hashes a partir da string %s ', $arg2, $arg1));
             return Command::SUCCESS;
         }
