@@ -26,10 +26,10 @@
                 <tr>
                     <th>Id</th>
                     <th>Date Time Batch</th>
-                    <th>Block Number</th>
+                    <th class='align-center'>Block Number</th>
                     <th>Entry String</th>
-                    <th>Generated Key</th>
-                    <th>Generation Attempts</th>
+                    <th class='align-center'>Generated Key</th>
+                    <th class='align-right'>Generation Attempts</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,10 +37,10 @@
                 <tr>
                     <td>{{ hash.id }}</td>
                     <td>{{ hash.dateTimeBatch ? hash.dateTimeBatch|date('d/m/Y H:i:s') : '' }}</td>
-                    <td>{{ hash.blockNumber }}</td>
+                    <td class='align-center'>{{ hash.blockNumber }}</td>
                     <td>{{ hash.entryString }}</td>
-                    <td>{{ hash.generatedKey }}</td>
-                    <td>{{ hash.generationAttempts|number_format(0, '.', '.') }}</td>
+                    <td class='align-center'>{{ hash.generatedKey }}</td>
+                    <td class='align-right'>{{ hash.generationAttempts|number_format(0, '.', '.') }}</td>
                 </tr>
             {% else %}
                 <tr>

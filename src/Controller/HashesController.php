@@ -17,6 +17,13 @@ use Exception;
 #[Route('/hashes')]
 class HashesController extends AbstractController
 {
+
+    public int $next_block;
+    const MAX_REQUEST_NUMBER = 200;
+    const LINES_PER_PAGE = 10;
+    const DEFAULT_VALUE_SEARCH = 100000000;
+    const HASH_QUALIFICATOR = '0000';
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PaginatorInterface $paginator,
@@ -25,14 +32,11 @@ class HashesController extends AbstractController
         private RateLimiterFactory $anonymousApiLimiter,
     ) {}
 
-    public int $next_block;
-
     #[Route('/', name: 'app_hashes_index', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
-        $em = $this->entityManager;
-        $allHashesRepository = $em->getRepository(Hashes::class);
-        
+        $allHashesRepository = $this->entityManager->getRepository(Hashes::class);
+
         if ($request->isMethod('POST')) {
             $page =  '1';
             $attemptQuery = $request->request->get('attemptQuery');
@@ -40,8 +44,8 @@ class HashesController extends AbstractController
             $page =  $request->query->getInt('page', 1);
             $attemptQuery = $request->get('attemptQuery');
         }
-        
-        if (!$attemptQuery) $attemptQuery = 10000;
+
+        if (!$attemptQuery) $attemptQuery = self::DEFAULT_VALUE_SEARCH ;
 
         $allHashesQuery = $allHashesRepository
                     ->createQueryBuilder('h')
@@ -50,37 +54,35 @@ class HashesController extends AbstractController
                     ->setParameter('attemptQuery', $attemptQuery)
                     ->getQuery();
 
-
         $allHashes = $this->paginator->paginate(
                             $allHashesQuery,
                             $page,
-                            10
+                            self::LINES_PER_PAGE
                         );
-
-        return $this->render('hashes/index.html.twig', 
-            [
-                'allHashes' => $allHashes,
-                'attemptQuery' => $attemptQuery
-            ]
-        );
+        return $this->render('hashes/index.html.twig', compact('allHashes', 'attemptQuery'));
     }
 
-    #[Route('/create/{entryString}/{requestNumber}', name: 'app_hashes_create', methods: ['GET'])]
-    public function create($entryString, $requestNumber, Request $request, RateLimiterFactory $anonymousApiLimiter): Response
+    #[Route(
+        '/create/{entryString}/{requestNumber}', 
+        name: 'app_hashes_create', 
+        methods: ['GET'],
+        requirements: ['requestNumber' => '[0-9]+']
+        )]
+    public function create($entryString, $requestNumber, Request $request): Response
     {
         $this->checkEntryValues($entryString, $requestNumber);
-        $limiter = $anonymousApiLimiter->create($request->getClientIp());
+        $limiter = $this->anonymousApiLimiter->create($request->getClientIp());
         $limit = $limiter->consume();
 
-        $headers = [
-            'X-RateLimit-Remaining' => $limit->getRemainingTokens(),
-            'X-RateLimit-Retry-After' => $limit->getRetryAfter()->getTimestamp(),
-            'X-RateLimit-Limit' => $limit->getLimit(),
-        ];
-
         if (false === $limit->isAccepted()) {
+            $headers = [
+                'X-RateLimit-Remaining' => $limit->getRemainingTokens(),
+                'X-RateLimit-Retry-After' => $limit->getRetryAfter()->getTimestamp(),
+                'X-RateLimit-Limit' => $limit->getLimit(),
+            ];
             return new Response(null, Response::HTTP_TOO_MANY_REQUESTS, $headers);
         }
+
         $this->generateHashCascate($entryString, $requestNumber);
         return $this->redirectToRoute('app_hashes_index', [], Response::HTTP_SEE_OTHER);
     }
@@ -110,7 +112,7 @@ class HashesController extends AbstractController
             $generatedKey = $this->generateStringPrefix(8);
             $generatedHash = $this->getHash($entryString, $generatedKey); 
             $generationAttempts++;
-        } while (substr($generatedHash, 0, 4) !== '0000');
+        } while (substr($generatedHash, 0, 4) !== self::HASH_QUALIFICATOR);
 
         $hashReturned = new Hashes();
         $hashReturned->setDateTimeBatch(new \DateTime('@'.strtotime('now'), new \DateTimeZone('America/Sao_Paulo')));
@@ -133,21 +135,10 @@ class HashesController extends AbstractController
         return $generatedString;
     }
 
-    private function concatenateStrings($receivedString, $key)
+    private function getHash($receivedString, $key) 
     {
-        return $receivedString . $key;
+        return md5($receivedString . $key);
     }
-
-    private function getHash($key, $receivedString) 
-    {
-        $completeString = $this->concatenateStrings($receivedString, $key);
-        return $this->md5Generator($completeString);
-    }
-
-    private function md5Generator($inputedString) 
-    {
-        return md5($inputedString);
-    }   
 
     public function checkEntryValues($entryString, $requestNumber) 
     {
@@ -157,13 +148,13 @@ class HashesController extends AbstractController
         if (!$requestNumber || !is_numeric($requestNumber)) 
             throw new Exception('Quantidade deve ser numérico. Valor rejeitado: ' . $requestNumber);
 
-        if (is_numeric($requestNumber) && ($requestNumber > 10000)) 
-            throw new Exception('Limite máximo de solicitações é 10.000. Valor solicitado: ' . $requestNumber);
+        if (is_numeric($requestNumber) && ($requestNumber > self::MAX_REQUEST_NUMBER)) 
+            throw new Exception('Limite máximo de solicitações é ' . self::MAX_REQUEST_NUMBER . '. Valor solicitado: ' . $requestNumber);
     }
 
-    public function addHash(Hashes $hash, HashesRepository $hashesRepository)
+    public function addHash(Hashes $hash)
     {
-        $hashesRepository->save($hash, true);
+        $this->hashesRepository->save($hash, true);
         return true;
     }
 
