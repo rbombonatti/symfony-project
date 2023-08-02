@@ -48,11 +48,11 @@ class HashesController extends AbstractController
         if (!$attemptQuery) $attemptQuery = self::DEFAULT_VALUE_SEARCH ;
 
         $allHashesQuery = $allHashesRepository
-                    ->createQueryBuilder('h')
-                    ->orderBy('h.blockNumber', 'DESC')
-                    ->where('h.generationAttempts < :attemptQuery')
-                    ->setParameter('attemptQuery', $attemptQuery)
-                    ->getQuery();
+            ->createQueryBuilder('h')
+            ->orderBy('h.blockNumber', 'DESC')
+            ->where('h.generationAttempts < :attemptQuery')
+            ->setParameter('attemptQuery', $attemptQuery)
+            ->getQuery();
 
         $allHashes = $this->paginator->paginate(
                             $allHashesQuery,
@@ -62,12 +62,7 @@ class HashesController extends AbstractController
         return $this->render('hashes/index.html.twig', compact('allHashes', 'attemptQuery'));
     }
 
-    #[Route(
-        '/create/{entryString}/{requestNumber}', 
-        name: 'app_hashes_create', 
-        methods: ['GET'],
-        requirements: ['requestNumber' => '[0-9]+']
-        )]
+    #[Route('/create/{entryString}/{requestNumber}', name: 'app_hashes_create', methods: ['GET'], requirements: ['requestNumber' => '[0-9]+'])]
     public function create($entryString, $requestNumber, Request $request): Response
     {
         $this->checkEntryValues($entryString, $requestNumber);
